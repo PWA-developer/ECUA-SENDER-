@@ -1,0 +1,492 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECUA-SENDER</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-light">
+    <div class="container-fluid">
+        <div id="auth-container" class="card shadow-sm">
+            <div id="registro-form" class="card-body">
+                <h2 class="card-title text-center mb-4">Registro de Usuario</h2>
+                <form id="signup-form">
+                    <div class="mb-3">
+                        <input type="text" id="nombre" class="form-control" placeholder="Nombre completo" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="email" id="email" class="form-control" placeholder="Correo electrónico (@gmail.com)" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" id="dip" class="form-control" placeholder="DIP (9 dígitos)" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" id="password" class="form-control" placeholder="Contraseña" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+                </form>
+                <p class="text-center mt-3">¿Ya tienes una cuenta? <a href="#" id="show-login" class="text-decoration-none">Iniciar sesión</a></p>
+            </div>
+
+            <div id="login-form" class="card-body" style="display:none">
+                <h2 class="card-title text-center mb-4">Iniciar Sesión</h2>
+                <form id="signin-form">
+                    <div class="mb-3">
+                        <input type="email" id="login-email" class="form-control" placeholder="Correo electrónico" required>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" id="login-password" class="form-control" placeholder="Contraseña" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+                </form>
+                <p class="text-center mt-3">¿No tienes una cuenta? <a href="#" id="show-register" class="text-decoration-none">Registrarse</a></p>
+            </div>
+        </div>
+
+        <div id="main-app" class="card shadow-sm" style="display:none">
+            <div class="card-body">
+                <h1 class="text-center mb-4">ECUA-SENDER</h1>
+                
+                <div id="formulario-envio">
+                    <h2 class="text-center mb-4">Nuevo Envío</h2>
+                    <div class="text-end mb-3">
+                        <button id="cerrar-sesion" class="btn btn-danger btn-sm"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</button>
+                    </div>
+                    <form id="envio-form">
+                        <!-- Datos del Remitente -->
+                        <div class="form-section">
+                            <h5 class="form-section-title"><i class="bi bi-person-fill"></i> Datos del Remitente</h5>
+                            <div class="form-group mb-3">
+                                <label for="remitente-nombre" class="form-label">Nombre completo</label>
+                                <input type="text" id="remitente-nombre" class="form-control form-control-lg" placeholder="Nombre completo del remitente" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="remitente-dip" class="form-label">Documento de Identidad</label>
+                                <input type="text" id="remitente-dip" class="form-control form-control-lg" placeholder="DIP del remitente (9 dígitos)" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Ciudades -->
+                        <div class="form-section">
+                            <h5 class="form-section-title"><i class="bi bi-geo-alt-fill"></i> Ubicación</h5>
+                            <div class="row">
+                                <div class="col-md-6 form-group mb-3">
+                                    <label for="ciudad-origen" class="form-label">Ciudad de Origen</label>
+                                    <select id="ciudad-origen" class="form-select form-select-lg" required>
+                                        <option value="">Seleccione ciudad de origen</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 form-group mb-3">
+                                    <label for="ciudad-destino" class="form-label">Ciudad de Destino</label>
+                                    <select id="ciudad-destino" class="form-select form-select-lg" required>
+                                        <option value="">Seleccione ciudad de destino</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Datos del Receptor -->
+                        <div class="form-section">
+                            <h5 class="form-section-title"><i class="bi bi-person-check-fill"></i> Datos del Receptor</h5>
+                            <div class="form-group mb-3">
+                                <label for="receptor-nombre" class="form-label">Nombre completo</label>
+                                <input type="text" id="receptor-nombre" class="form-control form-control-lg" placeholder="Nombre completo del receptor" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="receptor-telefono" class="form-label">Teléfono</label>
+                                <div class="input-group input-group-lg">
+                                    <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
+                                    <input type="tel" id="receptor-telefono" class="form-control" placeholder="Teléfono del receptor" required>
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="receptor-dip" class="form-label">Documento de Identidad</label>
+                                <input type="text" id="receptor-dip" class="form-control form-control-lg" placeholder="DIP del receptor (9 dígitos)" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Monto -->
+                        <div class="form-section">
+                            <h5 class="form-section-title"><i class="bi bi-cash-stack"></i> Monto</h5>
+                            <div class="form-group mb-3">
+                                <label for="monto" class="form-label">Cantidad a enviar</label>
+                                <div class="input-group input-group-lg">
+                                    <input type="number" id="monto" class="form-control form-control-lg" placeholder="Monto a enviar" required>
+                                    <span class="input-group-text">XAF</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success btn-lg w-100 py-3 mt-4"><i class="bi bi-send-fill"></i> Realizar Envío</button>
+                    </form>
+                    
+                    <div class="mt-4 d-grid gap-2">
+                        <button id="ver-usuarios" class="btn btn-secondary"><i class="bi bi-people-fill"></i> Ver Usuarios</button>
+                        <button id="ver-historial" class="btn btn-info"><i class="bi bi-clock-history"></i> Ver Historial</button>
+                        <button id="ver-stock" class="btn btn-warning"><i class="bi bi-cash-stack"></i> Stock</button>
+                        <button id="ver-reportes" class="btn btn-dark"><i class="bi bi-bar-chart-fill"></i> Reportes</button>
+                        <button id="ver-configuracion" class="btn btn-warning"><i class="bi bi-gear-fill"></i> Configuración</button>
+                        <button id="ver-informate" class="btn btn-primary"><i class="bi bi-info-circle-fill"></i> Infórmate</button>
+                    </div>
+                </div>
+                
+                <div id="usuarios-lista" class="card mb-4" style="display:none">
+                    <div class="card-body">
+                        <h3 class="card-title text-center">Usuarios Registrados</h3>
+                        <div class="alert alert-info mb-3">
+                            <small><i class="bi bi-info-circle"></i> Presione los botones para administrar los usuarios.</small>
+                        </div>
+                        <ul id="lista-usuarios" class="list-group list-group-flush"></ul>
+                        <button id="volver-envio" class="btn btn-primary w-100 mt-3">Volver al Envío de Dinero</button>
+                    </div>
+                </div>
+                
+                <div id="factura-section">
+                    <h2 class="text-center mb-3 mt-4">Factura del Envío</h2>
+                    <div id="factura-container" class="mb-4">
+                        <!-- La factura se generará dinámicamente aquí -->
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <button id="imprimir-factura" class="btn btn-primary w-100 mt-3 print-btn">
+                            <i class="bi bi-printer"></i> Imprimir Factura PDF
+                        </button>
+                        <button id="volver-desde-factura" class="btn btn-secondary w-100 mt-3 ms-2">Volver al Envío de Dinero</button>
+                    </div>
+                </div>
+                
+                <div id="historial-section" style="display:none">
+                    <h2 class="text-center mb-3 mt-4">Historial de Facturas</h2>
+                    <div id="facturas-lista" class="list-group mb-4">
+                        <!-- Las facturas se mostrarán aquí dinámicamente -->
+                    </div>
+                    <button id="volver-desde-historial" class="btn btn-secondary w-100 mt-3">Volver al Envío de Dinero</button>
+                </div>
+                
+                <div id="configuracion-section" style="display:none">
+                    <h2 class="text-center mb-3 mt-4">Configuración de la Empresa</h2>
+                    <div class="config-card">
+                        <form id="config-form">
+                            <div class="mb-3">
+                                <label for="nombre-empresa" class="form-label">Nombre de la Empresa</label>
+                                <input type="text" id="nombre-empresa" class="form-control" placeholder="Nombre de la empresa" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="telefono-empresa" class="form-label">Teléfono de la Empresa</label>
+                                <input type="tel" id="telefono-empresa" class="form-control" placeholder="Teléfono de contacto" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="logo-empresa" class="form-label">Logo de la Empresa</label>
+                                <input type="file" id="logo-empresa" class="form-control" accept="image/*">
+                            </div>
+                            <div class="text-center">
+                                <img id="logo-preview" class="logo-preview" style="display:none">
+                            </div>
+                            <div class="mb-3">
+                                <label for="unlock-email" class="form-label">Desbloquear Usuario (Correo Electrónico)</label>
+                                <input type="email" id="unlock-email" class="form-control" placeholder="Correo electrónico a desbloquear">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="saldo-inicial" class="form-label">Saldo Inicial (XAF)</label>
+                                <input type="number" id="saldo-inicial" class="form-control" placeholder="Ingrese saldo inicial" min="0">
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-success">Guardar Configuración General</button>
+                            </div>
+                        </form>
+
+                        <hr class="my-4">
+
+                        <h3 class="reporte-title mt-4"><i class="bi bi-cash-stack"></i> Gestión de Stock</h3>
+
+                        <div class="card shadow-sm mb-3">
+                            <div class="card-body py-3">
+                                <h5 class="card-title mb-1">Saldo Actual del Stock</h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 id="config-saldo-actual" class="mb-0 text-success">0 XAF</h4>
+                                        <small id="config-ultima-actualizacion" class="text-muted">Última actualización: --</small>
+                                    </div>
+                                    <div class="badge bg-primary">Stock</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form id="add-stock-form">
+                            <div class="mb-3">
+                                <label for="add-stock-amount" class="form-label">Agregar Saldo al Stock (XAF)</label>
+                                <input type="number" id="add-stock-amount" class="form-control form-control-lg" placeholder="Cantidad a agregar" min="1" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-warning"><i class="bi bi-plus-circle"></i> Agregar Saldo</button>
+                            </div>
+                        </form>
+
+                        <div class="d-grid mt-3">
+                            <button id="volver-desde-configuracion" class="btn btn-secondary">Volver al Envío de Dinero</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="informate-section" style="display:none">
+                    <h2 class="text-center mb-3 mt-4">Infórmate sobre ECUA-SENDER</h2>
+                    <div class="config-card">
+                        <div class="accordion" id="informateAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <i class="bi bi-question-circle me-2"></i> ¿Para qué sirve esta aplicación?
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#informateAccordion">
+                                    <div class="accordion-body">
+                                        <p>ECUA-SENDER es una aplicación diseñada para facilitar el envío de dinero entre diferentes ciudades de Guinea Ecuatorial. Permite a los usuarios realizar transferencias de dinero de forma segura y eficiente, generando facturas profesionales para cada transacción.</p>
+                                        <p>La aplicación mantiene un registro completo del historial de transacciones, facilita el seguimiento de los envíos realizados y genera reportes estadísticos para analizar el rendimiento del negocio.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        <i class="bi bi-book me-2"></i> ¿Cómo se utiliza?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#informateAccordion">
+                                    <div class="accordion-body">
+                                        <ol>
+                                            <li>Regístrese o inicie sesión en el sistema.</li>
+                                            <li>Complete el formulario de envío con los datos del remitente, receptor y el monto.</li>
+                                            <li>Seleccione la ciudad de origen y destino.</li>
+                                            <li>Envíe el formulario para generar la factura correspondiente.</li>
+                                            <li>Imprima la factura como comprobante de la transacción.</li>
+                                        </ol>
+                                        <p>Puede consultar el historial de facturas en cualquier momento, ver reportes estadísticos, así como configurar los datos de su empresa.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        <i class="bi bi-cash-coin me-2"></i> Estructura de comisiones
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#informateAccordion">
+                                    <div class="accordion-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped table-bordered">
+                                                <thead class="table-primary">
+                                                    <tr>
+                                                        <th>Rango de Monto (XAF)</th>
+                                                        <th>Comisión (XAF)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1 - 20,000</td>
+                                                        <td>500</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>20,001 - 40,000</td>
+                                                        <td>1,000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>40,001 - 60,000</td>
+                                                        <td>1,500</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>60,001 - 80,000</td>
+                                                        <td>2,000</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>80,001 - 100,000</td>
+                                                        <td>2,500</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2" class="text-center">Y así sucesivamente (+500 XAF por cada 20,000 XAF adicionales)</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <p class="mt-3">El sistema calcula automáticamente la comisión correspondiente según el monto enviado, siguiendo la regla de incremento de 500 XAF por cada intervalo de 20,000 XAF hasta un límite de 30,000,000 XAF.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                        <i class="bi bi-person-badge me-2"></i> Sobre el creador
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#informateAccordion">
+                                    <div class="accordion-body">
+                                        <div class="card border-primary mb-3">
+                                            <div class="card-header bg-primary text-white">Información del desarrollador</div>
+                                            <div class="card-body">
+                                                <h5 class="card-title">Tarciano ENZEMA NCHAMA</h5>
+                                                <ul class="list-group list-group-flush mb-3">
+                                                    <li class="list-group-item"><strong>Formación académica:</strong> Finalista universitario de la UNGE</li>
+                                                    <li class="list-group-item"><strong>Facultad:</strong> Ciencias económicas, gestión y administración</li>
+                                                    <li class="list-group-item"><strong>Departamento:</strong> Informática de gestión empresarial</li>
+                                                    <li class="list-group-item"><strong>Contacto:</strong> <a href="/cdn-cgi/l/email-protection#cfaaa1b5aaa2aea5bd8fa8a2aea6a3e1aca0a2"><span class="__cf_email__" data-cfemail="64010a1e0109050e16240309050d084a070b09">[email&#160;protected]</span></a></li>
+                                                    <li class="list-group-item"><strong>Fecha de creación:</strong> 10/03/2025</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button id="volver-desde-informate" class="btn btn-secondary">Volver al Envío de Dinero</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="reportes-section" style="display:none">
+                    <h2 class="text-center mb-3 mt-4">Reportes Estadísticos</h2>
+                    
+                    <div class="reporte-card">
+                        <h3 class="reporte-title"><i class="bi bi-bar-chart-fill"></i> Transferencias por Día</h3>
+                        <div class="reporte-seccion">
+                            <div class="chart-container">
+                                <div id="grafico-transferencias">
+                                    <canvas id="chart-transferencias"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="reporte-title"><i class="bi bi-cash-stack"></i> Comisiones por Día</h3>
+                        <div class="reporte-seccion">
+                            <div class="chart-container">
+                                <div id="grafico-comisiones">
+                                    <canvas id="chart-comisiones"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="reporte-title"><i class="bi bi-pie-chart-fill"></i> Ciudades con más Transferencias</h3>
+                        <div class="reporte-seccion">
+                            <div class="chart-container">
+                                <div id="grafico-ciudades">
+                                    <canvas id="chart-ciudades"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h3 class="reporte-title"><i class="bi bi-table"></i> Resumen de Datos</h3>
+                        <div class="reporte-seccion">
+                            <div class="tabla-resumen-container">
+                                <div id="tabla-resumen">
+                                    <!-- La tabla se generará dinámicamente aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="volver-desde-reportes" class="btn btn-secondary w-100 mt-3">Volver al Envío de Dinero</button>
+                </div>
+
+                <div id="stock-section" style="display:none">
+                    <h2 class="text-center mb-3 mt-4">Control de Stock</h2>
+                    <div class="stock-card">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h3 class="card-title">Saldo Actual del Stock</h3>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 id="stock-saldo-actual">0 XAF</h4>
+                                        <small id="stock-ultima-actualizacion" class="text-muted">Última actualización: --</small>
+                                    </div>
+                                    <div class="badge bg-primary">Stock</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="reporte-title mt-4"><i class="bi bi-clock-history"></i> Historial de Movimientos</h3>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th>Fecha y Hora</th>
+                                        <th>Tipo</th>
+                                        <th>Monto (XAF)</th>
+                                        <th>Comisión (XAF)</th>
+                                        <th>Saldo Resultante (XAF)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historial-stock">
+                                    <!-- Stock history will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <button id="volver-desde-stock" class="btn btn-secondary w-100 mt-3">Volver al Envío de Dinero</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="passwordModal" class="modal fade" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="passwordModalLabel">Ingrese la Clave de Acceso</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="accessKey" class="form-label">Clave de Acceso</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="accessKey" placeholder="Clave de Acceso" required>
+                                <button class="btn btn-outline-secondary" type="button" id="showPasswordToggle">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="passwordError" class="alert alert-danger" style="display:none;">Clave de acceso incorrecta.</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="validatePassword">Validar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="transferPasswordModal" class="modal fade" tabindex="-1" aria-labelledby="transferPasswordModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="transferPasswordModalLabel">Ingrese la Clave de Envío</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="transferKey" class="form-label">Clave de Envío</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="transferKey" placeholder="Clave de Envío" required>
+                                <button class="btn btn-outline-secondary" type="button" id="showTransferPasswordToggle">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="transferPasswordError" class="alert alert-danger" style="display:none;">
+                            Usted no tiene la clave de envío, póngase en contacto con el desarrollador del sistema "Tarciano ENZEMA NCHAMA (<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="04616a7e6169656e76446369656d682a676b69">[email&#160;protected]</a>)" y solicite la clave.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="validateTransferPassword">Validar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script type="module" src="app.js"></script>
+    </body>
+</html>
